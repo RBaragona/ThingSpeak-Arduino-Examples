@@ -42,11 +42,14 @@
 #include <Ethernet.h>
 
 // Local Network Settings
-byte mac[] = { 0xD4, 0x28, 0xB2, 0xFF, 0xA0, 0xA1 }; // Must be unique on local network
+byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xD9, 0x9C }; // Must be unique on local network
+// Set the static IP address to use if the DHCP fails to assign
+IPAddress ip(192,168,0,177);
+
 
 // ThingSpeak Settings
 char thingSpeakAddress[] = "api.thingspeak.com";
-String writeAPIKey = "XXXMX2WYYR0EV68M";
+String writeAPIKey = "UXSVIUABQ7CAW0W4";
 const int updateThingSpeakInterval = 16 * 1000;      // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
 
 // Variable Setup
@@ -156,8 +159,11 @@ void startEthernet()
   // Connect to network amd obtain an IP address using DHCP
   if (Ethernet.begin(mac) == 0)
   {
-    Serial.println("DHCP Failed, reset Arduino to try again");
+    Serial.println("DHCP Failed, trying static IP...");
     Serial.println();
+    
+    // start the Ethernet connection with static IP:
+    Ethernet.begin(mac, ip);
   }
   else
   {
